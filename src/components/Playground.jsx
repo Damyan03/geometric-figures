@@ -20,9 +20,11 @@ function Playground() {
         const bounds = e.currentTarget.getBoundingClientRect();
         const x2 = e.clientX - bounds.left;
         const y2 = e.clientY - bounds.top;
+        const x = Math.min(x2, currentSvg.x1);
+        const y = Math.min(y2, currentSvg.y1);
         const width = Math.abs(x2 - currentSvg.x1);
         const height = Math.abs(y2 - currentSvg.y1);
-        setCurrentSvg((cl) => ({...cl, width, height, x2, y2}));
+        setCurrentSvg((cl) => ({...cl, width, height, x, y, x2, y2}));
     }
 
 
