@@ -22,9 +22,12 @@ function Playground() {
         const y2 = e.clientY - bounds.top;
         const x = Math.min(x2, currentSvg.x1);
         const y = Math.min(y2, currentSvg.y1);
+        const r = Math.round((Math.sqrt(Math.pow(x2 - currentSvg.x1, 2) + Math.pow(y2 - currentSvg.y1, 2)))/2);
+        const cx = (x2 + currentSvg.x1)/2;
+        const cy = (y2 + currentSvg.y1)/2;
         const width = Math.abs(x2 - currentSvg.x1);
         const height = Math.abs(y2 - currentSvg.y1);
-        setCurrentSvg((cl) => ({...cl, width, height, x, y, x2, y2}));
+        setCurrentSvg((cl) => ({...cl, width, height, x, y, x2, y2, r, cx, cy}));
     }
 
 
@@ -64,22 +67,28 @@ function Playground() {
                             y={svg.y}
                             x1={svg.x1}
                             y1={svg.y1}
-                            x2={svg.x2 !== undefined ? svg.x2 : undefined}
-                            y2={svg.y2 !== undefined ? svg.y2 : undefined}
+                            x2={svg.x2}
+                            y2={svg.y2}
+                            r={svg.r}
+                            cx={svg.cx}
+                            cy={svg.cy}
                             stroke="red"
                             strokeWidth="2"
                         />
                     ))}
                     {currentSvg && (
                         <currentSvg.type
+                            width={currentSvg.width}
+                            height={currentSvg.height}
                             x={currentSvg.x}
                             y={currentSvg.y}
                             x1={currentSvg.x1}
                             y1={currentSvg.y1}
                             x2={currentSvg.x2}
                             y2={currentSvg.y2}
-                            width={currentSvg.width}
-                            height={currentSvg.height}
+                            r={currentSvg.r}
+                            cx={currentSvg.cx}
+                            cy={currentSvg.cy}
                             stroke="red"
                             strokeWidth="2"
                         />
