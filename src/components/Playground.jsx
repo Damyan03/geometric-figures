@@ -5,13 +5,22 @@ function Playground() {
     const [currentSvg, setCurrentSvg] = useState(null);
     const [svgType, setSvgType] = useState("line");
 
+    const gravityToggle = useRef(false);
+
+    // useEffect(() => {
+
+    //     return () => {
+    //         gravityToggle.current = false;
+    //     };
+    // }, []);
+
     function handleMouseDown(e) {
         const bounds = e.currentTarget.getBoundingClientRect();
         const x1 = e.clientX - bounds.left;
         const y1 = e.clientY - bounds.top;
         const type = svgType;
 
-        setCurrentSvg({type, width: 0, height: 0, x: x1, y: y1, x1, y1, x2: x1, y2: y1 });
+        setCurrentSvg({type, width: 0, height: 0, x: x1, y: y1, x1, y1, x2: x1, y2: y1, velocity: 1, goingDown: true});
     }
 
     function handleMouseMove(e) {
@@ -37,6 +46,56 @@ function Playground() {
         setSvgs([...svgs, currentSvg]);
         console.log(svgs);
         setCurrentSvg(null);
+    }
+
+    function handleGravity(){
+        gravityToggle.current = !gravityToggle.current;
+        if (gravityToggle.current){
+            requestAnimationFrame(gravityAnimation);
+        }
+    }
+
+    function gravityAnimation() {
+        if (!gravityToggle.current) return;
+    
+        setSvgs(prevSvgs => {
+            const newSvgs = prevSvgs.map((svg) => {
+                let velocity = svg.velocity;
+                const gravity = 0.5;
+                const damping = 0.7;
+    
+                switch (svg.type) {
+                    case 'line':
+                        if (svg.y1 + 10 > 600) return svg;
+                        return { ...svg, y1: svg.y1 + 10, y2: svg.y2 + 10 };
+    
+                    case 'rect':
+                        if (svg.y + svg.height >= 600) {
+                            velocity = -Math.abs(velocity) * damping;
+                            svg.y = 600 - svg.height;
+                        }else {
+                            velocity += gravity;
+                        }
+                        return { ...svg, y: svg.y + velocity, velocity };
+    
+                    case 'circle':
+                        if (svg.cy + svg.r >= 600) {
+                            velocity = -Math.abs(velocity) * damping;
+                            svg.cy = 600 - svg.r;
+                        }else {
+                            velocity += gravity;
+                        }
+    
+                        return { ...svg, cy: svg.cy + velocity, velocity };
+    
+                    default:
+                        return svg;
+                }
+            });
+            return newSvgs;
+        });
+    
+        requestAnimationFrame(gravityAnimation);
     }
 
     return (
@@ -94,14 +153,17 @@ function Playground() {
                         />
                     )}
                 </svg>
-                <div className="center rounded-md flex-col bg-white w-1/5">
+                <div className="center rounded-md flex-col gap-2 bg-white w-1/5">
                     <h1 className="select-none">Current tool: {svgType}</h1>
-                    <div className="center flex-col gap-2 m-2 p-2">
+                    <div className="center flex-col gap-2 m-2 p-2 w-full">
                         <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('line')}>Line</button>
                         <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('rect')}>Rect</button>
                         <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('circle')}>Circle</button>
                     </div>
-                    <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-200" onClick={() => setSvgs([])}>Clear</button>
+                    <div className="center flex-col gap-2 m-2 p-2 w-full">
+                        <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-200" onClick={() => setSvgs([])}>Clear</button>
+                        <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-200" onClick={handleGravity}>Gravity</button>
+                    </div>
                 </div>
             </div>
         </div>
