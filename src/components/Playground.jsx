@@ -2,31 +2,36 @@ import { useEffect, useRef, useState } from "react";
 
 function Playground() {
     const [svgs, setSvgs] = useState([]);
-    const [currentLine, setCurrentLine] = useState(null);
+    const [currentSvg, setCurrentSvg] = useState(null);
+    const [svgType, setSvgType] = useState("line");
 
     function handleMouseDown(e) {
         const bounds = e.currentTarget.getBoundingClientRect();
         const x1 = e.clientX - bounds.left;
         const y1 = e.clientY - bounds.top;
-        
-        setCurrentLine({ x1, y1, x2: x1, y2: y1 });
+        const type = svgType;
+
+        setCurrentSvg({type, width: 0, height: 0, x: x1, y: y1, x1, y1, x2: x1, y2: y1 });
     }
 
     function handleMouseMove(e) {
-        if (!currentLine) return;
+        if (!currentSvg) return;
 
         const bounds = e.currentTarget.getBoundingClientRect();
         const x2 = e.clientX - bounds.left;
         const y2 = e.clientY - bounds.top;
-        
-        setCurrentLine((cl) => ({...cl, x2, y2}));
+        const width = Math.abs(x2 - currentSvg.x1);
+        const height = Math.abs(y2 - currentSvg.y1);
+        setCurrentSvg((cl) => ({...cl, width, height, x2, y2}));
     }
 
-    function handleMouseUp(e) {
-        if (!currentLine) return;
 
-        setSvgs([...svgs, currentLine]);
-        setCurrentLine(null);
+    function handleMouseUp(e) {
+        if (!currentSvg) return;
+
+        setSvgs([...svgs, currentSvg]);
+        console.log(svgs);
+        setCurrentSvg(null);
     }
 
     return (
@@ -36,9 +41,8 @@ function Playground() {
                     <h1 className="text-3xl">Playground</h1>
                     <p>Let's draw some geometric figures!</p>
                 </div>
-                <h1>test</h1>
             </div>
-            <div className="bg-green-300 w-full p-5">
+            <div className="flex gap-10 bg-green-300 w-full p-5">
                 <svg
                     id="pgcanvas"
                     height="600"
@@ -49,28 +53,44 @@ function Playground() {
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
                 >
-                    {svgs.map((line, index) => (
-                        <line
+                    {svgs.map((svg, index) => (
+                        <svg.type
                             key={index}
-                            x1={line.x1}
-                            y1={line.y1}
-                            x2={line.x2}
-                            y2={line.y2}
+                            height= {svg.height}
+                            width= {svg.width}
+                            x={svg.x}
+                            y={svg.y}
+                            x1={svg.x1}
+                            y1={svg.y1}
+                            x2={svg.x2 !== undefined ? svg.x2 : undefined}
+                            y2={svg.y2 !== undefined ? svg.y2 : undefined}
                             stroke="red"
                             strokeWidth="2"
                         />
                     ))}
-                    {currentLine && (
-                        <line
-                            x1={currentLine.x1}
-                            y1={currentLine.y1}
-                            x2={currentLine.x2}
-                            y2={currentLine.y2}
+                    {currentSvg && (
+                        <currentSvg.type
+                            x={currentSvg.x}
+                            y={currentSvg.y}
+                            x1={currentSvg.x1}
+                            y1={currentSvg.y1}
+                            x2={currentSvg.x2}
+                            y2={currentSvg.y2}
+                            width={currentSvg.width}
+                            height={currentSvg.height}
                             stroke="red"
                             strokeWidth="2"
                         />
                     )}
                 </svg>
+                <div className="center rounded-md flex-col bg-white w-1/5">
+                    <h1>Current tool: {svgType}</h1>
+                    <div className="center flex-col gap-2 m-2 p-2">
+                        <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('line')}>Line</button>
+                        <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('rect')}>Rect</button>
+                        <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('circle')}>Circle</button>
+                    </div>
+                </div>
             </div>
         </div>
     );
