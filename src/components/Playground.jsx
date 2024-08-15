@@ -90,17 +90,18 @@ function Playground() {
                             cx={currentSvg.cx}
                             cy={currentSvg.cy}
                             stroke="red"
-                            strokeWidth="2"
+                            strokeWidth="5"
                         />
                     )}
                 </svg>
                 <div className="center rounded-md flex-col bg-white w-1/5">
-                    <h1>Current tool: {svgType}</h1>
+                    <h1 className="select-none">Current tool: {svgType}</h1>
                     <div className="center flex-col gap-2 m-2 p-2">
                         <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('line')}>Line</button>
                         <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('rect')}>Rect</button>
                         <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('circle')}>Circle</button>
                     </div>
+                    <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-200" onClick={() => setSvgs([])}>Clear</button>
                 </div>
             </div>
         </div>
