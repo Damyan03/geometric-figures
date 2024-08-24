@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 function Playground() {
     const [svgs, setSvgs] = useState([]);
@@ -154,7 +155,48 @@ function Playground() {
                     )}
                 </svg>
                 <div className="center rounded-md flex-col gap-2 bg-white w-1/5">
-                    <h1 className="select-none">Current tool: {svgType}</h1>
+                <h1 className="select-none">Current tool: {svgType}</h1>
+                <DropdownMenu.Root>
+                    <DropdownMenu.Trigger>
+                        <h2 className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300">Tools</h2>
+                    </DropdownMenu.Trigger>
+
+                    <DropdownMenu.Portal>
+                        <DropdownMenu.Content className="bg-gray-200 flex justify-start align-middle flex-col h-auto">
+                            <DropdownMenu.Label><h4>Label</h4></DropdownMenu.Label>
+                            <DropdownMenu.Item><h2>Item 1</h2></DropdownMenu.Item>
+                            <DropdownMenu.Item><h2>Item 2</h2></DropdownMenu.Item>
+                            <DropdownMenu.Item><h2>Item 3</h2></DropdownMenu.Item>
+
+                            <DropdownMenu.Separator>
+                                <h2>Separator</h2>
+                            </DropdownMenu.Separator>
+
+                            <DropdownMenu.Group>
+                                <DropdownMenu.Item><h2>Group Item 1</h2></DropdownMenu.Item>
+                                <DropdownMenu.Item><h2>Group Item 2</h2></DropdownMenu.Item>
+                                <DropdownMenu.Item><h2>Group Item 3</h2></DropdownMenu.Item>
+                            </DropdownMenu.Group>
+
+                            <DropdownMenu.CheckboxItem>
+                                <DropdownMenu.ItemIndicator>
+                                    <span>✔ Checked</span>
+                                </DropdownMenu.ItemIndicator>
+                                <h2>Checkbox Item</h2>
+                            </DropdownMenu.CheckboxItem>
+
+                            <DropdownMenu.Sub>
+                                <DropdownMenu.SubTrigger><h2>Sub Trigger</h2></DropdownMenu.SubTrigger>
+                                <DropdownMenu.Portal>
+                                    <DropdownMenu.SubContent className="flex justify-start align-middle flex-col h-auto">
+                                        <DropdownMenu.Item><h2>Sub Item 1</h2></DropdownMenu.Item>
+                                        <DropdownMenu.Item><h2>Sub Item 2</h2></DropdownMenu.Item>
+                                    </DropdownMenu.SubContent>
+                                </DropdownMenu.Portal>
+                            </DropdownMenu.Sub>
+                        </DropdownMenu.Content>
+                    </DropdownMenu.Portal>
+                    </DropdownMenu.Root>
                     <div className="center flex-col gap-2 m-2 p-2 w-full">
                         <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('line')}>Line</button>
                         <button className="bg-green-400 rounded-md p-2 w-full hover:bg-green-300" onClick={() => setSvgType('rect')}>Rect</button>
